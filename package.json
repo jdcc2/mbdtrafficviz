@@ -6,9 +6,12 @@
   "license": "MIT",
   "author": "JH Kuipers",
   "dependencies": {
+    "axios": "^0.15.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "react-mapbox-gl": "^0.28.0"
+    "react-mapbox-gl": "^0.28.0",
+    "sphericalmercator": "^1.0.5",
+    "turf": "^3.0.14"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",

@@ -4,6 +4,18 @@
 import React, {Component} from 'react'
 import ReactMapboxGl, { Layer, Feature, ZoomControl, ScaleControl, Marker } from "react-mapbox-gl";
 import OSMStyle from '../mapstyles/osmbright_style.js'
+import {getGeoJSON} from '../helpers.js'
+
+
+
+
+
+getGeoJSON(5.175500, 52.078689, 14).then((data) => {
+    console.log(data);
+}).catch((error) => {
+    console.log(error);
+});
+
 
 let style = OSMStyle;
 //Set source to local vector tile server
@@ -27,7 +39,6 @@ class Map extends Component {
                 style={style}
                 center={[5.175500, 52.078689]}
                 zoom={[8]}
-                pitch={30}
                 //Not needed
                 accessToken="pk.eyJ1IjoiZmFicmljOCIsImEiOiJjaWc5aTV1ZzUwMDJwdzJrb2w0dXRmc2d0In0.p6GGlfyV-WksaDV_KdN27A"
                 containerStyle={{
