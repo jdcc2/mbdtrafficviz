@@ -4,14 +4,11 @@
 import React, {Component} from 'react'
 import ReactMapboxGl, { Layer, Feature, ZoomControl, ScaleControl, Marker } from "react-mapbox-gl";
 import OSMStyle from '../mapstyles/osmbright_style.js'
-import {getGeoJSON} from '../helpers.js'
+import {getGeoJSON, closestRoad} from '../helpers.js'
 
-
-
-
-
-getGeoJSON(5.175500, 52.078689, 14).then((data) => {
+getGeoJSON(4.41788, 52.1431, 14).then((data) => {
     console.log(data);
+    console.log(closestRoad(data, 4.41788, 52.1431));
 }).catch((error) => {
     console.log(error);
 });
@@ -22,11 +19,25 @@ let style = OSMStyle;
 style.sources = {
     "openmaptiles": {
         "type": "vector",
-        "url": "http://localhost:8070/data/openmaptiles.json"
+        "url": "http://localhost:8070/data/v3.json"
     }
 };
 
+function calculateDataPolygon(datapoint) {
+    //get the closest road from the GeoJSON
+    //get the point on the road closest to point using turf.pointOnline()
+    //Get a stretch of line using turf.lineSlice()
+    //Convert the stretch of line to a polygon with correct fill extrusion
+    //turf.bboxPolygon()
+
+
+    //return the polygon
+
+}
+
 let datapoint = {'lane': 'lane2', 'measurementSiteId': 'GEO02_R_RWSTI610', 'measurementTime': '2017-01-20T06:11:00Z', 'period': 60.0, 'longitude': 4.41788, 'nrOfLanes': '2', 'measurementSiteName': 'R_RWS_0610', 'latitude': 52.1431, 'averageFlow': 12.0, 'averageSpeed': 32.0};
+
+//Find the
 
 /**
  * WARNING: the map component used longitude, latitude format for coordinates :/
