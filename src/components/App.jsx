@@ -3,23 +3,15 @@
  */
 import React, {Component} from 'react'
 import bulma from 'bulma/css/bulma.css'
-import MapGL from './MapGL.jsx'
+import MapWrapper from './MapWrapper.jsx'
 
 class App extends Component {
     render () {
         return (
             <div className="container">
                 <h1 className="title">Traffic Jam Viewer</h1>
-                <div className="columns">
-                    <div className="column is-three-quarters">
-                        <MapGL/>
-                    </div>
-                    <div className="column">
-                        Menu stuffs
-                    </div>
+                    <MapWrapper/>
                 </div>
-
-            </div>
 
         );
     }
