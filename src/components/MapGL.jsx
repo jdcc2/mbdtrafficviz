@@ -44,7 +44,9 @@ class MapGL extends Component {
 
     addLayer(layer) {
         //TODO save ID for easy removal,
-        this.map.addLayer(layer);
+        if(!this.map.getLayer(layer.id)) {
+            this.map.addLayer(layer);
+        }
     }
 
     setPitch(pitch) {
@@ -55,6 +57,30 @@ class MapGL extends Component {
         console.log(marker);
         marker.addTo(this.map);
     }
+
+    moveTo(lon, lat) {
+        this.map.easeTo({
+            center: [lon, lat],
+            zoom: 14,
+            duration: 3000,
+            bearing: 0
+        });
+    }
+
+    recenter() {
+        this.map.flyTo({
+            center: [5.175500, 52.078689],
+            zoom: 8,
+            pitch: 30,
+            bearing: 0,
+            duration: 5000
+        });
+    }
+    //Component should never rerender
+    shouldComponentUpdate() {
+        return false;
+    }
+
     componentDidMount() {
 
         this.map = new mapboxgl.Map({
@@ -64,6 +90,7 @@ class MapGL extends Component {
             zoom: 8, // starting zoom
             pitch: 30
         });
+        this.map.addControl(new mapboxgl.NavigationControl());
 
         this.map.on('load', () => {
             this.setState({

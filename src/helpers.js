@@ -4,8 +4,8 @@ import mapboxgl from 'mapbox-gl'
 import moment from 'moment'
 
 //Boooooh, hardcoded server URL
-export const tileserver = 'http://localhost:8070/data/openmaptiles';
 
+export const tileserver = 'http://localhost:8070/data/v3';
 /**
  * Convert the longitude and latitude coordinates together with the zoom level to XYZ tiles (slippy url format)
  *
@@ -226,8 +226,10 @@ export function generateLayersForSite(siteData, currentTime, nrOfLayers, layerHe
 }
 
 export function generateMarker(siteData) {
-
-    return new mapboxgl.Marker()
+    let elem = document.createElement('p');
+    elem.appendChild(document.createTextNode(siteData.measurementSiteId));
+    elem.setAttribute("style", "color: green");
+    return new mapboxgl.Marker(elem)
         .setLngLat([siteData.trafficJams[0].longitude, siteData.trafficJams[0].latitude]);
 }
 

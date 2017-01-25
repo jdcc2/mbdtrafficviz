@@ -6,7 +6,8 @@ import {getGeoJSON, closestRoad, roadSegment, lineToPolygon, generateLayersForSi
 import sampledata from '../sampledata.json'
 import moment from 'moment'
 import MapGL from './MapGL.jsx'
-
+import TimePicker from 'react-datetime'
+import timepickercss from 'react-datetime/css/react-datetime.css'
 
 class MapWrapper extends Component {
 
@@ -14,16 +15,48 @@ class MapWrapper extends Component {
         super();
         this.state = {
             sitePolygons: {},
+            sites: [],
+            currentTime: moment(),
+            selectedTime: moment()
         }
     }
 
     componentDidMount() {
-        window.setTimeout(() => {
-            this.renderSite(sampledata[0]);
-        }, 1000);
+        // window.setTimeout(() => {
+        //     this.renderSite(sampledata[0]);
+        // }, 1000);
+
+        this.setState({
+            sites: sampledata.slice(0, 100)
+        })
+
     }
 
-    renderSite(siteData) {
+    handleTimeChange = (time) => {
+        this.setState({
+            currentTime: time
+        });
+    }
+
+    handleTimeSave = (time) => {
+        this.setState({
+            selectedTime: time
+        });
+        console.log(time);
+    }
+
+    onRecenterClick = () => {
+        this.mapgl.recenter();
+    }
+
+    onSiteClick = (index) => {
+        console.log(index);
+        this.renderSite(this.state.sites[index]);
+        this.mapgl.moveTo(this.state.sites[index].trafficJams[0].longitude, this.state.sites[index].trafficJams[0].latitude);
+    }
+
+    renderSite = (siteData) => {
+
         let polygon = null;
         //fetch the polygon if it is not cached yet
         if(!this.state.sitePolygons.hasOwnProperty(siteData.measurementSiteId) && siteData.trafficJams.length > 0) {
@@ -42,7 +75,7 @@ class MapWrapper extends Component {
             }).then((p) => {
                 let [start, end] = getTimeFrameSite(siteData);
                 if(p) {
-                    let layers = generateLayersForSite(siteData, end, 10, 40, 30, polygon);
+                    let layers = generateLayersForSite(siteData, end, 10, 40, 30, p);
                     layers.forEach((layer) => {
                         this.mapgl.addLayer(layer);
                     });
@@ -57,10 +90,10 @@ class MapWrapper extends Component {
         } else if (this.state.sitePolygons.hasOwnProperty(siteData.measurementSiteId)){
             polygon = this.state.sitePolygons[siteData.measurementSiteId];
             let [start, end] = getTimeFrameSite(siteData);
-            if(p) {
+            if(polygon) {
                 let layers = generateLayersForSite(siteData, end, 10, 40, 30, polygon);
                 layers.forEach((layer) => {
-                    this.state.map.addLayer(layer);
+                    this.mapgl.addLayer(layer);
                 });
                 this.mapgl.addMarker(generateMarker(siteData));
             } else {
@@ -81,13 +114,52 @@ class MapWrapper extends Component {
 
     render() {
 
+        let listItems = [];
+        this.state.sites.forEach((siteData, index) => {
+            let [start, end] = getTimeFrameSite(siteData);
+            listItems.push(
+                <div className="card" key={index}>
+                  <header className="card-header">
+                    <p className="card-header-title">
+                      {siteData.measurementSiteId}
+                    </p>
+                  </header>
+                  <div className="card-content">
+                    <div className="content">
+                      Name: {siteData.trafficJams[0].measurementSiteName}
+                      <br/>
+                      Time shown: {end.format('DD-MM-YYYY hh:mm')}
+                    </div>
+                  </div>
+                  <footer className="card-footer">
+                    <a className="card-footer-item">
+                        <button className="button" onClick={() => {this.onSiteClick(index)}}>
+                            Go to measurement site
+                        </button>
+                    </a>
+                  </footer>
+                </div>
+            );
+        });
+
         return (
             <div className="columns">
                 <div className="column is-three-quarters">
-                    <MapGL ref={(mapgl) => this.mapgl = mapgl}/>
+                    <MapGL ref={(mapgl) => {this.mapgl = mapgl; console.log(this.mapgl)}}/>
                 </div>
                 <div className="column">
-                    Menu stuffs
+
+                    <nav className="panel">
+                        <p className="panel-heading">
+                            Measurement sites
+                        </p>
+                        <button className="button" onClick={this.onRecenterClick}>
+                            Recenter
+                        </button>
+                        <div style={{overflow: 'auto', maxHeight: 600}}>
+                            {listItems}
+                        </div>
+                    </nav>
                 </div>
             </div>
         );
