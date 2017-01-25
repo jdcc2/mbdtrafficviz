@@ -2,13 +2,29 @@
  * Created by jd on 22-1-17.
  */
 import React, {Component} from 'react'
-import ReactMapboxGl, { Layer, Feature, ZoomControl, ScaleControl, Marker } from "react-mapbox-gl";
+import ReactMapboxGl, { Layer, Feature, ZoomControl, ScaleControl, Marker , GeoJSONLayer} from "react-mapbox-gl";
 import OSMStyle from '../mapstyles/osmbright_style.js'
-import {getGeoJSON, closestRoad} from '../helpers.js'
+import {getGeoJSON, closestRoad, roadSegment, lineToPolygon} from '../helpers.js'
+
+let polygon = null;
+let polygonPaint = {
+    'fill-extrusion-color': '#ffffff',
+    'fill-extrusion-height': 100,
+    'fill-extrusion-base': 50,
+};
+let polygonFeature = null;
 
 getGeoJSON(4.41788, 52.1431, 14).then((data) => {
     console.log(data);
-    console.log(closestRoad(data, 4.41788, 52.1431));
+    let roadData = closestRoad(data, 4.41788, 52.1431);
+    let segment = roadSegment(roadData.line, roadData.lineLocation, 0.4);
+    polygon = lineToPolygon(segment, 0.05);
+    polygonFeature = (
+        <Feature
+            coordinates={polygon.geometry.coordinates}
+        />
+    );
+
 }).catch((error) => {
     console.log(error);
 });
@@ -66,6 +82,12 @@ class Map extends Component {
                     type="circle"
                     paint={{ "circle-radius": 30, "circle-color": "#E54E52", "circle-opacity": .8 }}>
                     <Feature coordinates={[5.175500, 52.078689]}/>
+                </Layer>
+                <Layer
+                    type="fill"
+                    paint={polygonPaint}
+                >
+                    {polygonFeature}
                 </Layer>
                 <Marker
                     coordinates={[5.175500, 52.078689]}>

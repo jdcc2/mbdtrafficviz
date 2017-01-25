@@ -6,12 +6,16 @@
   "license": "MIT",
   "author": "JH Kuipers",
   "dependencies": {
+    "@turf/turf": "^3.7.7",
     "axios": "^0.15.3",
+    "brfs": "^1.4.3",
+    "mapbox-gl": "^0.31.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-mapbox-gl": "^0.28.0",
     "sphericalmercator": "^1.0.5",
-    "turf": "^3.0.14"
+    "transform-loader": "^0.2.3",
+    "webworkify-webpack": "^2.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",

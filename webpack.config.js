@@ -18,7 +18,13 @@ module.exports = {
         path: path.join(__dirname, './build/'),
         publicPath: '/build'
     },
-
+    resolve: {
+        extensions: ['.js'],
+        alias: {
+            webworkify: 'webworkify-webpack',
+            'mapbox-gl': path.resolve('./node_modules/mapbox-gl/dist/mapbox-gl.js')
+        }
+    },
     module: {
         rules: [ // Loaders allow you to preprocess files!
             {
@@ -36,6 +42,21 @@ module.exports = {
                 ],
                 exclude: [/node_modules/],
             },
+            {
+                test: /\.js$/,
+                include: path.resolve(__dirname, 'node_modules/webworkify/index.js'),
+                use: [
+                    {loader: 'worker'}
+                ]
+
+            },
+            {
+                test: /mapbox-gl.+\.js$/,
+                use: [
+                    {loader: 'transform-loader/cacheable?brfs'}
+                ]
+
+            }
         ],
     },
     plugins: [

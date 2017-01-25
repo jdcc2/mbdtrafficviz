@@ -1,5 +1,8 @@
 import axios from 'axios';
-import turf from 'turf'
+import turf from '@turf/turf'
+
+//Boooooh, hardcoded server URL
+const tileserver = 'http://localhost:8070/data/v3';
 
 /**
  * Convert the longitude and latitude coordinates together with the zoom level to XYZ tiles (slippy url format)
@@ -71,7 +74,54 @@ export function closestRoad(data, lon, lat) {
 
 }
 
-const tileserver = 'http://localhost:8070/data/v3';
+/**
+ *
+ * @param line - LineString GeoJSON feature
+ * @param centerDistance - distance along the line to use as center of the segment (in km)
+ * @param length - length of the segment to extract (in km)
+ */
+export function roadSegment(line, centerDistance, length) {
+    let totalLength = turf.lineDistance(line);
+    let startDistance = centerDistance - (length /2);
+    let stopDistance = centerDistance + (length/2);
+    if(startDistance < 0) {
+        startDistance = 0;
+    }
+    if(stopDistance > totalLength) {
+        stopDistance = totalLength;
+    }
+    console.log(line);
+    console.log(startDistance, stopDistance, totalLength, centerDistance)
+    return turf.lineSliceAlong(line, startDistance, stopDistance);
+}
+
+/**
+ * Converts a line to a rectangular polygon with the specified width
+ *
+ * @param line - LineFeature
+ * @param width - width of the resulting polygon in km
+ * @returns {*}
+ */
+export function lineToPolygon(line, width) {
+    let startPoint = turf.point(line.geometry.coordinates[0]);
+    let endPoint = turf.point(line.geometry.coordinates[line.geometry.coordinates.length -1]);
+    let lineBearing = turf.bearing(startPoint, endPoint);
+    console.log(lineBearing);
+    let bearing = (lineBearing + 90) % 360;
+    console.log(bearing);
+    let cornerStart = turf.destination(startPoint, width, bearing);
+    let cornerEnd = turf.destination(endPoint, width, bearing);
+
+    console.log(line);
+
+
+    let polygon = turf.polygon([[cornerStart.geometry.coordinates, cornerEnd.geometry.coordinates, endPoint.geometry.coordinates, startPoint.geometry.coordinates, cornerStart.geometry.coordinates]]);
+    console.log(polygon);
+
+    return polygon;
+}
+
+
 
 /**
  * Get GeoJSON data for the given coordinates

@@ -33,3 +33,4 @@ React wrapper for mapbox-gl.js, a WebGL powered map rendering engine. Can use, a
 - http://turfjs.org/index.html # GeoJSON manipulation and extraction library
 - http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/
 - https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Lon..2Flat._to_tile_numbers -> section 'Derivation of tile names'
+- http://www.macwright.org/2015/03/23/geojson-second-bite.html#polygons -> GeoJSON explanation
