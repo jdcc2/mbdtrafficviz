@@ -8,7 +8,7 @@ import MapWrapper from './MapWrapper.jsx'
 class App extends Component {
     render () {
         return (
-            <div className="container">
+            <div className="container is-fluid">
                 <h1 className="title">Traffic Jam Viewer</h1>
                     <MapWrapper/>
                 </div>
